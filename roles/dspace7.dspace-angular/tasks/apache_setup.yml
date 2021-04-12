@@ -1,0 +1,32 @@
+---
+- name: Create dspace-angular Apache configuration
+  template:
+    src: dspace-angular.conf.j2
+    dest: '/etc/httpd/conf.d/dspace-angular.conf'
+
+- name: Add config to default Apache config
+  blockinfile:
+    path: /etc/httpd/conf/httpd.conf
+    create: yes
+    content: |
+      ServerName {{ project_hostname }}:80
+      ServerAdmin email@example.com
+      UseCanonicalName On
+
+      <VirtualHost *:80>
+        ServerName {{ project_hostname }}
+        # redirect all traffic to https
+        RedirectMatch permanent ^/(.*)$ https://{{ project_hostname }}/$1
+
+        ErrorLog logs/error_log
+        CustomLog logs/access_log combined
+      </VirtualHost>
+    insertafter: EOF
+
+- name: Create .htaccess file in dspace-angular's /dist folder
+  template:
+    src: htaccess.j2
+    dest: '{{ dspace_angular_home_dir }}/dist/.htaccess'
+  become: yes
+  become_user: '{{ project_dspace_user }}'
+  notify: Restart Apache

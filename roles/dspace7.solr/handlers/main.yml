@@ -1,0 +1,7 @@
+---
+# handlers file for dspace7.solr
+
+- name: Restart Solr
+  service:
+    name: solr
+    state: restarted

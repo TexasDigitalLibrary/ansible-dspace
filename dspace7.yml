@@ -1,0 +1,15 @@
+---
+- name: Provision a DSpace 7 (API + Angular frontend) instance
+  hosts: all
+  become: true
+  vars_files:
+    - site_vars.yml
+  gather_facts: true
+  roles:
+    - dspace7.common
+    - dspace7.apache
+    - dspace7.postgresql
+    - dspace7.solr
+    - dspace7.dspace-api
+    - dspace7.dspace-angular
+    - dspace7.yum-update

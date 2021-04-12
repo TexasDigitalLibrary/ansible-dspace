@@ -1,0 +1,9 @@
+---
+# handlers file for dspace7.dspace-api
+
+- name: Restart Tomcat
+  service:
+    name: "{{ tomcat_daemon }}"
+    state: restarted
+    sleep: 600
+  become: yes

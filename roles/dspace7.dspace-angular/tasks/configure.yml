@@ -1,0 +1,38 @@
+---
+- name: Check that production configuration exists
+  stat:
+    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+  register: production_config
+
+- name: Copy default configuration
+  copy:
+    src: "{{ dspace_angular_home_dir }}/src/environments/environment.common.ts"
+    dest: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+    remote_src: yes
+  become: true
+  become_user: "{{ project_dspace_user }}"
+  when: not production_config.stat.exists
+
+- name: dspace-angular config - set UI host
+  replace:
+    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+    regexp: "^    host: 'localhost',"
+    replace: "    host: '0.0.0.0',"
+
+- name: dspace-angular config - set REST use SSL
+  replace:
+    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+    regexp: "^    ssl: true,"
+    replace: "    ssl: false,"
+
+- name: dspace-angular config - set REST host
+  replace:
+    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+    regexp: "^    host: 'api7.dspace.org',"
+    replace: "    host: 'localhost',"
+
+- name: dspace-angular config - set REST port
+  replace:
+    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
+    regexp: "^    port: 443,"
+    replace: "    port: 8080,"

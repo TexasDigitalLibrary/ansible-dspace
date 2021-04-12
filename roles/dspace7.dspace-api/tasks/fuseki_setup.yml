@@ -1,0 +1,73 @@
+---
+- name: Add the {{ fuseki_group }} group
+  group:
+    name: "{{ fuseki_group }}"
+    state: present
+
+- name: Add the {{ fuseki_user }} user with a primary group of {{ fuseki_group }}
+  user:
+    name: "{{ fuseki_user }}"
+    password: "{{ fuseki_password | password_hash('sha512') }}"
+    comment: Fuseki user
+    group: "{{ fuseki_group }}"
+
+- name: Make sure {{ fuseki_install_dir }} is created
+  file:
+    dest: "{{ fuseki_install_dir }}"
+    state: directory
+    owner: root
+    group: root
+
+- name: Download Fuseki binaries
+  get_url:
+    url: "http://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-{{ fuseki_version }}.tar.gz"
+    dest: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}.tar.gz"
+    owner: root
+    group: root
+    mode: 0664
+    timeout: 100
+
+- name: Unarchive Fuseki in {{ fuseki_install_dir }}
+  unarchive:
+    src: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}.tar.gz"
+    dest: "{{ fuseki_install_dir }}"
+    owner: root
+    group: root
+    remote_src: yes
+
+- name: Create symlink to the installed version of Fuseki
+  file:
+    src: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}"
+    dest: "{{ fuseki_install_dir }}/fuseki"
+    state: link
+    owner: "{{ fuseki_user }}"
+    group: "{{ fuseki_group }}"
+
+- name: Create run directory for Fuseki
+  file:
+    dest: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}/run"
+    state: directory
+    owner: "{{ fuseki_user }}"
+    group: "{{ fuseki_group }}"
+
+- name: Change ownership of all Fuseki directories and files to {{ fuseki_user }} user
+  file:
+    path: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}"
+    state: directory
+    recurse: yes
+    owner: "{{ fuseki_user }}"
+    group: "{{ fuseki_group }}"
+
+- name: Add Fuseki as a service to systemd
+  copy:
+    src: "{{ fuseki_install_dir }}/apache-jena-fuseki-{{ fuseki_version }}/fuseki.service"
+    dest: /etc/systemd/system/fuseki.service
+    remote_src: yes
+    owner: "{{ fuseki_user }}"
+    group: "{{ fuseki_group }}"
+
+- name: Set Fuseki to start on reboot
+  service:
+    name: fuseki
+    enabled: yes
+    state: restarted

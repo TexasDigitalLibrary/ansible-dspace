@@ -1,0 +1,83 @@
+---
+# Project config
+project_dspace_user: dspace
+project_dspace_group: dspace
+project_dspace_password: dspace
+project_hostname: localhost
+project_contact_email: 'email@example.com'
+local_files_dir: "{{ playbook_dir }}/local_files"
+
+# Apache config
+apache_use_ssl: false
+
+# Solr config
+solr_user: solr
+solr_group: solr
+solr_host: localhost
+solr_port: 8983
+solr_url: 'http://localhost:{{ solr_port }}/solr'
+solr_version: 8.8.1
+solr_install_dir: /opt
+solr_home_dir: /var/solr
+solr_config_file: /etc/default/solr.in.sh
+
+# PostgreSQL config
+postgres_user: postgres
+postgres_group: postgres
+postgres_password: postgres
+
+# Tomcat config
+tomcat_user: tomcat
+tomcat_group: tomcat
+tomcat_daemon: tomcat
+
+# Shibboleth config
+install_shibboleth: false
+
+# Fuseki config
+fuseki_version: 4.0.0
+fuseki_user: fuseki
+fuseki_group: fuseki
+fuseki_password: fuseki
+fuseki_install_dir: /opt
+
+# GeoIP config
+geoip_version: 4.6.0
+geoip_account_id: [insert account id]
+geoip_license_key: [insert license key]
+
+# DSpace database config
+dspace_db_host: localhost
+dspace_db_user: [insert username]
+dspace_db_password: [insert password]
+dspace_db_port: 5432
+dspace_db_name: dspace
+
+# Maven config
+maven_version: 3.8.1
+
+# DSpace API config
+dspace_api_git_repo: https://github.com/DSpace/DSpace.git
+dspace_api_git_branch: main     # branch or tag
+dspace_api_build_dir: "/home/{{ project_dspace_user }}"
+dspace_api_home_dir: /dspace
+
+# DSpace user config
+dspace_admin_firstname: [insert first name]
+dspace_admin_lastname: [insert last name]
+dspace_admin_email: [insert email]
+dspace_admin_password: [insert password]
+dspace_admin_language: en
+
+# NodeJS config
+nvm_version: 0.38.0
+node_version: 14.16.1
+
+# PM2 config
+pm2_version: 4.5.6
+
+# DSpace Angular config
+dspace_angular_git_repo: https://github.com/DSpace/dspace-angular.git
+dspace_angular_git_branch: main     # branch or tag
+dspace_angular_home_dir: /dspace-angular
+dspace_angular_environment: production

@@ -1,0 +1,61 @@
+---
+# tasks file for dspace7.common
+
+# Variables
+- import_tasks: variables.yml
+
+# Amazon-linux-extras
+- import_tasks: amazon_linux_extras.yml
+
+- name: Install common packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - gcc
+      - sendmail-cf
+      - perl-Digest-HMAC
+      - perl-Digest-SHA1
+      - ant
+      - git
+      - ImageMagick
+      - openssl-devel
+      - readline-devel
+      - zlib-devel
+      - libcurl-devel
+      - apr-devel
+      - apr-util-devel
+      - libmemcached-devel
+      - java-11-openjdk
+      - java-11-openjdk-devel
+      - tomcat
+      - tomcat-admin-webapps
+
+- name: Install the 'Development tools' package group
+  yum:
+    name: "@Development tools"
+    state: present
+
+- name: Use correct java version
+  alternatives:
+    name: java
+    link: /usr/bin/java
+    path: /usr/lib/jvm/java-11-openjdk-11.0.9.11-0.amzn2.0.1.x86_64/bin/java
+
+- name: Use correct javac version
+  alternatives:
+    name: javac
+    link: /usr/bin/javac
+    path: /usr/lib/jvm/java-11-openjdk-11.0.9.11-0.amzn2.0.1.x86_64/bin/javac
+
+# Install Maven
+- import_tasks: maven.yml
+
+# Set up DSpace user
+- import_tasks: dspace_user_setup.yml
+
+- name: Set Tomcat to restart on reboot
+  service:
+    name: "{{ tomcat_daemon }}"
+    enabled: yes

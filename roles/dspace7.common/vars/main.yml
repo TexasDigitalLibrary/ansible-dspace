@@ -1,0 +1,5 @@
+---
+# vars file for dspace7.common
+__amazon_linux_extras_packages:
+  - tomcat9
+  - java-openjdk11

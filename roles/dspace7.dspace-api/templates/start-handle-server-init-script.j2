@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# DSpace 7.x Handle Server start/shutdown script
+# processname: handle-server
+# chkconfig: 2345 90 20
+#
+# Instalation:
+# copy file to /etc/init.d
+# chmod +x /etc/init.d/handle-server
+# chkconfig --add /etc/init.d/handle-server
+# chkconfig handle-server on
+#
+# Usage: (as root)
+# service handle-server start
+# service handle-server stop
+# service handle-server status
+#
+
+# Path to dspace bin folder
+DSPACE_BIN={{ dspace_api_home_dir }}/bin
+START_HANDLE_SERVER=start-handle-server
+
+PIDFILE=/var/run/handle-server.pid
+
+# source function library
+. /etc/init.d/functions
+RETVAL=0
+
+start() {
+    echo -n "Starting Handle Server: "
+    cd ${DSPACE_BIN}
+    ./${START_HANDLE_SERVER} > /dev/null 2>&1
+    RETVAL=$?
+    PID="`ps aux | grep java | grep handle | head -n 1 | cut -f2-7 -d" " | tr -d '[:blank:]'`"
+    if [ ${RETVAL} -eq 0 ]; then
+        echo ${PID} > ${PIDFILE}
+        success
+    else
+        failure
+    fi
+}
+stop() {
+    echo -n "Stopping Handle Server: "
+    if [ -f ${PIDFILE} ]; then
+        PID="`cat ${PIDFILE}`"
+        cd ${DSPACE_BIN}
+        kill ${PID}
+        clean
+        success
+    else
+        warning
+        echo -e "\n already stopped"
+    fi
+}
+status() {
+    echo -n "Checking Handle Server..."
+    if [ -f ${PIDFILE} ]; then
+        PID=`cat ${PIDFILE}`
+        if [ -z "`ps axf | grep ${PID} | grep -v grep`" ]; then
+            warning
+            echo -e "\n Process dead but pidfile exists"
+        else
+            success
+            echo -e "\n is running"
+        fi
+    else
+        success
+        echo -e "\n is stopped"
+    fi
+}
+clean() {
+        rm -f ${PIDFILE}
+}
+case "$1" in
+start)
+clean
+start
+;;
+stop)
+stop
+;;
+restart|reload)
+stop
+sleep 10
+start
+;;
+status)
+status
+;;
+*)
+echo "Usage: $0 {start|stop|restart|status}"
+esac
+exit 0

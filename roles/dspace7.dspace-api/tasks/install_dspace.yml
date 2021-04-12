@@ -1,0 +1,66 @@
+---
+- name: Create {{ dspace_api_home_dir }} if it doesn't exist
+  file:
+    path: '{{ dspace_api_home_dir }}'
+    state: directory
+  become: yes
+
+- name: Change ownership of {{dspace_api_home_dir }} to {{ project_dspace_user }}
+  file:
+    path: '{{ dspace_api_home_dir }}'
+    state: directory
+    owner: '{{ project_dspace_user }}'
+    group: '{{ project_dspace_group }}'
+
+- name: Clone DSpace 7 repository from GitHub into {{ dspace_api_build_dir }}
+  git:
+    repo: "{{ dspace_api_git_repo }}"
+    dest: "{{ dspace_api_build_dir }}/DSpace"
+    clone: yes
+    update: yes
+    force: yes
+    version: "{{ dspace_api_git_branch }}"
+  become: yes
+  become_user: "{{ project_dspace_user }}"
+
+- name: Copy local.cfg.EXAMPLE to local.cfg
+  copy:
+    src: "{{ dspace_api_build_dir }}/DSpace/dspace/config/local.cfg.EXAMPLE"
+    dest: "{{ dspace_api_build_dir }}/DSpace/dspace/config/local.cfg"
+    remote_src: yes
+
+- name: DSpace 7 API config - set dspace.ui.url in local.cfg
+  replace:
+    path: "{{ dspace_api_build_dir }}/DSpace/dspace/config/local.cfg"
+    regexp: "^dspace.ui.url = http://localhost:4000"
+    replace: "dspace.ui.url = http://localhost"
+
+- name: DSpace 7 API config - set dspace.ui.url in dspace.cfg
+  replace:
+    path: "{{ dspace_api_build_dir }}/DSpace/dspace/config/dspace.cfg"
+    regexp: "^dspace.ui.url = http://localhost:4000"
+    replace: "dspace.ui.url = http://localhost"
+
+- name: Increase JVM memory in bin/dspace
+  replace:
+    path: "{{ dspace_api_build_dir }}/DSpace/dspace/bin/dspace"
+    regexp: '  JAVA_OPTS="-Xmx256m -Dfile.encoding=UTF-8"'
+    replace: '  JAVA_OPTS="-Xmx2048M -Xms1024M -Dfile.encoding=UTF-8"'
+
+- name: Build DSpace 7 API with Maven
+  shell: source /etc/profile.d/maven.sh && mvn clean package
+  args:
+    chdir: "{{ dspace_api_build_dir }}/DSpace"
+    executable: /bin/bash
+  become: yes
+  become_user: "{{ project_dspace_user }}"
+  register: mvn_result
+
+- name: Run 'ant fresh_install' to install DSpace 7 API
+  shell: ant fresh_install
+  args:
+    chdir: "{{ dspace_api_build_dir }}/DSpace/dspace/target/dspace-installer"
+    executable: /bin/bash
+  become: yes
+  become_user: "{{ project_dspace_user }}"
+  register: ant_result

@@ -1,0 +1,13 @@
+---
+- name: Copy default Solr configuration for all cores
+  shell: 'cp -r {{ dspace_api_home_dir }}/solr/* {{ solr_home_dir }}/data/'
+  become: yes
+
+- name: Recursively change ownership of all cores to {{ solr_user }}
+  file:
+    path: '{{ solr_home_dir }}/data'
+    state: directory
+    recurse: yes
+    owner: '{{ solr_user }}'
+    group: '{{ solr_group }}'
+  notify: Restart Solr

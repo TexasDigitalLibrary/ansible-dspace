@@ -1,0 +1,21 @@
+---
+# tasks file for dspace7.dspace
+
+# Ensure other directories that DSpace requires exist
+- name: Make sure the other directories that DSpace requires exist
+  file:
+    path: "{{ dspace_api_home_dir}}/{{ item }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: 0755
+    recurse: yes
+    state: directory
+  with_items: ["assetstore", "exports", "handle-server", "log", "reports", "search", "triplestore", "upload", "var", "oai"]
+
+- name: Create server.xml file
+  template:
+    src: server.xml.j2
+    dest: '/etc/{{ tomcat_daemon }}/Catalina/localhost/server.xml'
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    backup: yes

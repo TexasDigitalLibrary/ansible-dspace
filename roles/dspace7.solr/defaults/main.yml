@@ -1,0 +1,39 @@
+---
+# defaults file for dspace7.solr
+
+# Solr user and group. Defaults to solr:solr.
+solr_user: "{{ solr_user }}"
+solr_group: "{{ solr_group }}"
+
+# Port Solr should bind to.
+solr_port: "{{ solr_port }}"
+
+# Download Solr here.
+solr_download_dir: /tmp
+
+# Solr home directory.
+solr_home_dir: "{{ solr_home_dir }}"
+
+# Solr config file
+solr_config_file: "{{ solr_config_file }}"
+
+# Solr host
+solr_connect_host: localhost
+
+# Solr xms
+solr_xms: "512M"
+
+# Solr xmx
+solr_xmx: "1024M"
+
+# Solr timezone
+solr_timezone: "UTC"
+
+# Remove downloaded archive and extracted files.
+solr_cleanup_downloads: true
+
+# Remove downloaded GPG keys file and .asc signature file.
+solr_cleanup_gpg: true
+
+# Solr cores to configure.
+solr_cores: []

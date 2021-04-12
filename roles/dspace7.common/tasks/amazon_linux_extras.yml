@@ -1,0 +1,13 @@
+---
+- name: Disable amazon-linux-extras tomcat8.5 package
+  shell: "amazon-linux-extras disable tomcat8.5"
+  become: true
+
+- name: Enable amazon-linux-extras packages
+  shell: "amazon-linux-extras enable {{ item }}"
+  with_items: "{{ amazon_linux_extras_packages }}"
+  become: true
+
+- name: Run 'yum clean metadata'
+  shell: "yum clean metadata"
+  become: true

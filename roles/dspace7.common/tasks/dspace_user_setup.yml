@@ -1,0 +1,26 @@
+---
+- name: Add the group {{ project_dspace_group }}
+  group:
+    name: "{{ project_dspace_group }}"
+    state: present
+
+- name: Add the user {{ project_dspace_user }} with a primary group of {{ project_dspace_group }}
+  user:
+    name: "{{ project_dspace_user }}"
+    password: "{{ project_dspace_password | password_hash('sha512') }}"
+    comment: DSpace system user for API and Angular
+    shell: /bin/bash
+    group: "{{ project_dspace_group }}"
+
+- name: Make sure a wheel group exists
+  group:
+    name: wheel
+    state: present
+
+- name: Allow wheel group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'

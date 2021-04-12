@@ -1,0 +1,93 @@
+---
+# Check if Solr already installed
+- name: Check if Solr already installed
+  command: '{{ solr_install_dir }}/solr/bin/solr version'
+  register: solr_existing_version
+  changed_when: false
+  failed_when: false
+
+# Make sure all directories exist
+- name: Make sure all directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - '{{ solr_download_dir }}'
+    - '{{ solr_install_dir }}'
+    - '{{ solr_home_dir }}'
+  when: solr_existing_version.rc != 0
+
+- name: Set Solr download destination
+  set_fact:
+    solr_download_dest: '{{ solr_download_dir }}/solr-{{ solr_version }}.tgz'
+  changed_when: false
+  when: solr_existing_version.rc != 0
+
+# Download Solr from the closest mirror (won't work for archive releases).
+- name: Download Solr from the closest mirror
+  get_url:
+    url: 'http://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz'
+    dest: '{{ solr_download_dest }}'
+  failed_when: false
+  when: solr_existing_version.rc != 0
+
+- name: Unpack Solr
+  unarchive:
+    src: '{{ solr_download_dest }}'
+    dest: '{{ solr_download_dir }}'
+    remote_src: true
+    creates: '{{ solr_download_dir }}/solr-{{ solr_version }}/bin/install_solr_service.sh'
+  when: solr_existing_version.rc != 0
+
+- name: Run Solr installation script
+  command: >
+    {{ solr_download_dir }}/solr-{{ solr_version }}/bin/install_solr_service.sh
+    {{ solr_download_dest }}
+    -i {{ solr_install_dir }}
+    -d {{ solr_home_dir }}
+    -u {{ solr_user }}
+    -p {{ solr_port }}
+  args:
+    creates: '{{ solr_install_dir }}/solr/bin/solr'
+  when: solr_existing_version.rc != 0
+
+- name: Chown Solr files to solr user
+  file:
+    path: "{{ solr_install_dir }}/solr-{{ solr_version }}"
+    owner: "{{ solr_user }}"
+    group: "{{ solr_group }}"
+    recurse: yes
+
+- name: Stop Solr
+  service:
+    name: solr
+    state: stopped
+    enabled: no
+
+- name: Remove solr init.d file
+  file: path=/etc/init.d/solr
+        state=absent
+
+- name: Copy solr service
+  template:
+    src: service.j2
+    dest: /lib/systemd/system/solr.service
+    owner: solr
+    mode: 0755
+
+- name: Enable solr service
+  systemd:
+    name: solr
+    enabled: yes
+    masked: no
+    daemon_reload: yes
+    state: restarted
+
+- name: Make sure daemon is reloaded
+  shell: systemctl daemon-reload
+
+#- name: Add Solr bin directory to global $PATH
+#  template:
+#    src: solr.sh.j2
+#    dest: /etc/profile.d/solr.sh
+#    mode: 0644

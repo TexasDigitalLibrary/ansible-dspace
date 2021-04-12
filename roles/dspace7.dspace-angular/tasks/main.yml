@@ -1,0 +1,20 @@
+---
+# tasks file for dspace7.dspace-angular
+
+# Dependencies tasks
+- import_tasks: dependencies.yml
+
+# Dependencies tasks
+- import_tasks: install.yml
+
+# Configure tasks
+- import_tasks: configure.yml
+
+# Build tasks
+- import_tasks: build.yml
+
+# PM2 tasks
+- import_tasks: pm2_setup.yml
+
+# Apache tasks
+- import_tasks: apache_setup.yml

@@ -1,0 +1,18 @@
+---
+# tasks file for dspace7.solr
+
+- name: Create Solr user and group
+  include_tasks: setup.yml
+
+- name: Install Solr
+  include_tasks: install.yml
+
+- name: Configure Solr
+  include_tasks: configure.yml
+
+- name: Configure Solr cores
+  include_tasks: cores.yml
+
+- name: Finish any outstanding tasks
+  include_tasks: finish.yml
+  when: solr_existing_version is failed

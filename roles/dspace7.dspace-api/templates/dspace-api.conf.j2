@@ -1,0 +1,39 @@
+<VirtualHost *:80>
+  ServerName {{ project_hostname }}
+  ServerAlias *
+
+  # For dspace-angular app
+  Header set Access-Control-Allow-Origin "*"
+
+  <Directory {{ dspace_api_home_dir }}>
+    AllowOverride All
+    Require all granted
+  </Directory>
+  Alias /robots.txt {{ dspace_api_home_dir }}/robots.txt
+
+  ProxyPreserveHost On
+  UseCanonicalName On
+  DocumentRoot "/var/www/html"
+
+  #<Location /*/shibboleth-login>
+  #  AuthType shibboleth
+  #  shibrequiresession Off
+  #  ShibUseHeaders on
+  #  Require shibboleth
+  #</Location>
+
+  ProxyPass         /server  ajp://localhost:8009/server connectiontimeout=3600 timeout=36000
+  ProxyPassReverse  /server  ajp://localhost:8009/server
+
+  <Location /fuseki/>
+      ProxyPass http://localhost:3030/
+      ProxyPassReverse /
+      ProxyHTMLURLMap / /fuseki/
+  </Location>
+
+  LogLevel warn
+  CustomLog logs/access_log combined
+  ErrorLog logs/error_log
+
+  ServerSignature Off
+</VirtualHost>

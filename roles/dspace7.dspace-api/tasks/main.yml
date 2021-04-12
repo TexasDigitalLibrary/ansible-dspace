@@ -1,0 +1,86 @@
+---
+# tasks file for dspace7.dspace-api
+
+# Database tasks
+- import_tasks: postgresql_setup.yml
+
+- name: Stop Tomcat
+  service:
+    name: "{{ tomcat_daemon }}"
+    state: stopped
+
+# DSpace install tasks
+- import_tasks: install_dspace.yml
+
+- name: Recursively change ownership of all {{ dspace_api_home_dir }} to {{ tomcat_user }}
+  file:
+    path: '{{ dspace_api_home_dir }}'
+    state: directory
+    recurse: yes
+    owner: '{{ tomcat_user }}'
+    group: '{{ tomcat_group }}'
+
+
+# Filesystem tasks
+- import_tasks: filesystem_setup.yml
+
+# Solr tasks
+- import_tasks: solr_setup.yml
+
+# Fuseki tasks
+- import_tasks: fuseki_setup.yml
+
+# Shibboleth tasks
+- import_tasks: shibboleth_setup.yml
+  vars:
+    shibboleth: "{{ install_shibboleth }}"
+  when: shibboleth
+
+# Apache tasks
+- import_tasks: apache_setup.yml
+
+- name: Chown DSpace 7 files to Tomcat user
+  file:
+    path: "{{ dspace_api_home_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    recurse: yes
+
+# Tomcat tasks
+- import_tasks: tomcat_setup.yml
+
+- name: Restart Tomcat
+  service:
+    name: "{{ tomcat_daemon }}"
+    state: restarted
+
+- name: Wait for Tomcat to finish starting up
+  wait_for:
+    host: localhost
+    port: 8080
+    timeout: 600
+  become: yes
+
+# Apache tasks
+- import_tasks: handle-server_setup.yml
+
+# geoipupdate tasks
+- import_tasks: geoipupdate_setup.yml
+
+- name: Chown DSpace 7 files to Tomcat user
+  file:
+    path: "{{ dspace_api_home_dir }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    recurse: yes
+
+- name: Create DSpace administrator
+  command: "{{ dspace_api_home_dir }}/bin/dspace create-administrator -e {{ dspace_admin_email }} -f {{ dspace_admin_firstname }} -l {{ dspace_admin_lastname }} -c {{ dspace_admin_language }} -p {{ dspace_admin_password }}"
+  become: yes
+  become_user: "{{ tomcat_user }}"
+
+# NOTE: DSpace 7 doesn't have a sample crontab documented yet, so for now we install one from DSpace 6
+- name: Install Tomcat crontab with DSpace tasks
+  template:
+    src: crontomcat.j2
+    dest: '/var/spool/cron/tomcat'

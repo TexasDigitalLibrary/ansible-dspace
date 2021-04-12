@@ -1,0 +1,20 @@
+---
+# tasks file for dspace7.dspace
+
+- name: Install handle-server init.d startup script
+  template:
+    src: start-handle-server-init-script.j2
+    dest: '/etc/init.d/handle-server'
+    mode: '0755'
+    backup: yes
+  become: yes
+
+- name: Add the handle-server service
+  command: 'chkconfig handle-server --add'
+  become: yes
+
+- name: Ensure handle-server is started and enabled on boot
+  service:
+    name: handle-server
+    enabled: yes
+    state: restarted

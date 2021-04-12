@@ -1,0 +1,7 @@
+---
+# handlers file for dspace7.postgresql
+
+- name: Restart Postgresql
+  service:
+    name: "{{ postgresql_daemon }}"
+    state: restarted

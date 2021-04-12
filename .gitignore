@@ -1,0 +1,4 @@
+**/*.DS_Store
+**/site_vars.yml
+**/.vagrant
+**/*.retry

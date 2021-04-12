@@ -1,0 +1,36 @@
+---
+- name: Remove the GeoIP package
+  yum:
+    name: GeoIP
+    state: absent
+
+- name: Download GeoIP update RPM
+  get_url:
+    url: "https://github.com/maxmind/geoipupdate/releases/download/v{{ geoip_version }}/geoipupdate_{{ geoip_version }}_linux_amd64.rpm"
+    dest: "/root/geoipupdate_{{ geoip_version }}_linux_amd64.rpm"
+    owner: root
+    group: root
+    mode: 0664
+    timeout: 100
+
+- name: Install geoipupdate rpm package.
+  yum:
+     name: /root/geoipupdate_{{ geoip_version}}_linux_amd64.rpm
+     state: present
+
+- name: Install GeoIP.conf file
+  template:
+    src: GeoIP.conf.j2
+    dest: '/etc/GeoIP.conf'
+
+- name: Run geoipupdate
+  command: geoipupdate
+  become: yes
+
+- name: Create geoipupdate cron job
+  cron:
+    name: "run geoipupdate"
+    minute: "0"
+    hour: "6"
+    weekday: "1"
+    job: "/bin/geoipupdate"

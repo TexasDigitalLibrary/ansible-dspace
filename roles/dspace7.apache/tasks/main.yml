@@ -1,0 +1,13 @@
+---
+# tasks file for dspace7.apache
+- name: Install Apache 2.4
+  yum:
+    name: ['httpd', 'httpd-tools', 'httpd-devel', 'mod_proxy_html', 'mod_ssl']
+    state: present
+
+# Enable and restart Apache
+- name: Enable and restart Apache
+  service:
+    name: "{{ apache_daemon }}"
+    enabled: yes
+    state: restarted

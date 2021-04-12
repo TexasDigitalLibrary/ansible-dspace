@@ -1,0 +1,22 @@
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User={{ project_dspace_user }}
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/home/{{ project_dspace_user }}/.nvm/versions/node/v{{ node_version }}/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/home/{{ project_dspace_user }}/.local/bin:/home/{{ project_dspace_user }}/bin:/home/{{ project_dspace_user }}/.yarn/bin:/home/{{ project_dspace_user }}/.nvm/versions/node/v{{ node_version }}/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/home/{{ project_dspace_user }}/.pm2
+PIDFile=/home/{{ project_dspace_user }}/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/usr/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/usr/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/usr/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target

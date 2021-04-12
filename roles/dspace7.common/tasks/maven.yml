@@ -1,0 +1,24 @@
+---
+- name: Download Maven from mirror
+  get_url:
+    url: 'https://downloads.apache.org/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz'
+    dest: '/opt/apache-maven-{{ maven_version }}-bin.tar.gz'
+
+- name: Unpack Maven
+  unarchive:
+    src: '/opt/apache-maven-{{ maven_version }}-bin.tar.gz'
+    dest: '/opt'
+    remote_src: true
+
+- name: Create a symbolic link
+  file:
+    src: /opt/apache-maven-{{ maven_version }}
+    dest: /opt/maven
+    owner: root
+    group: root
+    state: link
+
+- name: Copy maven.sh to server
+  copy:
+     src: maven.sh
+     dest: /etc/profile.d/maven.sh
