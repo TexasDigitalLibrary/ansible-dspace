@@ -64,3 +64,11 @@
   become: yes
   become_user: "{{ project_dspace_user }}"
   register: ant_result
+
+- name: Recursively change ownership of all {{ dspace_api_home_dir }} to {{ tomcat_user }}
+  file:
+    path: '{{ dspace_api_home_dir }}'
+    state: directory
+    recurse: yes
+    owner: '{{ tomcat_user }}'
+    group: '{{ tomcat_group }}'

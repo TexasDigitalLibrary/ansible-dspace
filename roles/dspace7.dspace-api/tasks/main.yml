@@ -12,15 +12,6 @@
 # DSpace install tasks
 - import_tasks: install_dspace.yml
 
-- name: Recursively change ownership of all {{ dspace_api_home_dir }} to {{ tomcat_user }}
-  file:
-    path: '{{ dspace_api_home_dir }}'
-    state: directory
-    recurse: yes
-    owner: '{{ tomcat_user }}'
-    group: '{{ tomcat_group }}'
-
-
 # Filesystem tasks
 - import_tasks: filesystem_setup.yml
 
