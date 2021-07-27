@@ -1,6 +1,6 @@
 ---
-- name: Enable amazon-linux-extras postgresql11 package
-  command: amazon-linux-extras enable postgresql11
+- name: Enable amazon-linux-extras postgresql13 package
+  command: amazon-linux-extras enable postgresql13
   become: yes
 
 - name: Ensure PostgreSQL packages are installed.
