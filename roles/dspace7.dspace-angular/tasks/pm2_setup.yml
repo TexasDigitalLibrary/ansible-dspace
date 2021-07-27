@@ -7,7 +7,7 @@
 
 - name: Install nodejs
   yum:
-    name: 'nodejs-{{ node_version }}'
+    name: 'nodejs'
     state: present
   become: yes
 
