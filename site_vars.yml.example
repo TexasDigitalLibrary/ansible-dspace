@@ -16,7 +16,7 @@ solr_group: solr
 solr_host: localhost
 solr_port: 8983
 solr_url: 'http://localhost:{{ solr_port }}/solr'
-solr_version: 8.8.1
+solr_version: 8.9.0
 solr_install_dir: /opt
 solr_home_dir: /var/solr
 solr_config_file: /etc/default/solr.in.sh
@@ -35,14 +35,14 @@ tomcat_daemon: tomcat
 install_shibboleth: false
 
 # Fuseki config
-fuseki_version: 4.0.0
+fuseki_version: 4.1.0
 fuseki_user: fuseki
 fuseki_group: fuseki
 fuseki_password: fuseki
 fuseki_install_dir: /opt
 
 # GeoIP config
-geoip_version: 4.6.0
+geoip_version: 4.8.0
 geoip_account_id: [insert account id]
 geoip_license_key: [insert license key]
 
@@ -71,10 +71,10 @@ dspace_admin_language: en
 
 # NodeJS config
 nvm_version: 0.38.0
-node_version: 14.16.1
+node_version: 14.17.3
 
 # PM2 config
-pm2_version: 4.5.6
+pm2_version: 5.1.0
 
 # DSpace Angular config
 dspace_angular_git_repo: https://github.com/DSpace/dspace-angular.git
