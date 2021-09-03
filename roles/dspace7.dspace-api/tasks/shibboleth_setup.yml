@@ -1,6 +1,8 @@
 ---
 - name: Install Shibboleth repository
-  shell: curl --output /etc/yum.repos.d/security:shibboleth.repo  https://download.opensuse.org/repositories/security:/shibboleth/CentOS_7/security:shibboleth.repo
+  copy:
+    src: security.shibboleth.repo
+    dest: "/etc/yum.repos.d/security:shibboleth.repo"
   become: yes
 
 - name: Install the Shibboleth Service Provider
