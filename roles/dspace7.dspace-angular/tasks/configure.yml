@@ -13,12 +13,6 @@
   become_user: "{{ project_dspace_user }}"
   when: not production_config.stat.exists
 
-- name: dspace-angular config - set UI host
-  replace:
-    path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
-    regexp: "^    host: 'localhost',"
-    replace: "    host: '0.0.0.0',"
-
 - name: dspace-angular config - set REST use SSL
   replace:
     path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
@@ -29,7 +23,7 @@
   replace:
     path: "{{ dspace_angular_home_dir }}/src/environments/environment.prod.ts"
     regexp: "^    host: 'api7.dspace.org',"
-    replace: "    host: 'localhost',"
+    replace: "    host: '{{ dspace_api_hostname }}',"
 
 - name: dspace-angular config - set REST port
   replace:

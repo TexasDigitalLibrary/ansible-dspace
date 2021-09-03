@@ -3,7 +3,6 @@
 project_dspace_user: dspace
 project_dspace_group: dspace
 project_dspace_password: dspace
-project_hostname: localhost
 project_contact_email: 'email@example.com'
 local_files_dir: "{{ playbook_dir }}/local_files"
 
@@ -58,9 +57,10 @@ maven_version: 3.8.1
 
 # DSpace API config
 dspace_api_git_repo: https://github.com/DSpace/DSpace.git
-dspace_api_git_branch: main     # branch or tag
+dspace_api_git_branch: dspace-7.0     # branch or tag
 dspace_api_build_dir: "/home/{{ project_dspace_user }}"
 dspace_api_home_dir: /dspace
+dspace_api_hostname: localhost
 
 # DSpace user config
 dspace_admin_firstname: [insert first name]
@@ -69,15 +69,19 @@ dspace_admin_email: [insert email]
 dspace_admin_password: [insert password]
 dspace_admin_language: en
 
-# NodeJS config
-nvm_version: 0.38.0
-node_version: 14.17.3
+# DSpace user NodeJS config
+dspace_nvm_version: 0.38.0
+dspace_node_version: 14.17.5
+
+# Global NodeJS config
+global_node_version: 14.17.5
 
 # PM2 config
-pm2_version: 5.1.0
+pm2_version: 5.1.1
 
 # DSpace Angular config
 dspace_angular_git_repo: https://github.com/DSpace/dspace-angular.git
-dspace_angular_git_branch: main     # branch or tag
+dspace_angular_git_branch: dspace-7.0     # branch or tag
 dspace_angular_home_dir: /dspace-angular
 dspace_angular_environment: production
+dspace_angular_hostname: localhost

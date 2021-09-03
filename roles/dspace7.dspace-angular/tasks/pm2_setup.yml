@@ -5,9 +5,9 @@
   args:
     warn: false
 
-- name: Install nodejs
+- name: Install global NodeJS
   yum:
-    name: 'nodejs'
+    name: 'nodejs-{{ global_node_version }}'
     state: present
   become: yes
 
@@ -18,33 +18,21 @@
     global: yes
   become: yes
 
-- name: Create ecosystem.config.js configuration file for PM2
+- name: Install PM2-logrotate
+  command: pm2 install pm2-logrotate
+  become: yes
+
+- name: Create dspace-angular.json configuration file for PM2
   template:
-    src: ecosystem.config.js.j2
-    dest: '{{ dspace_angular_home_dir }}/ecosystem.config.js'
-  become: yes
-  become_user: "{{ project_dspace_user }}"
-
-- name: Start dspace-angular app with PM2 and ecosystem.conf.js
-  shell: |
-    source /home/{{ project_dspace_user }}/.bashrc
-    pm2 start ecosystem.config.js
-  args:
-    chdir: "{{ dspace_angular_home_dir }}"
-  become: yes
-  become_user: "{{ project_dspace_user }}"
-
-- name: Save dspace-angular app for PM2 in /home/{{ project_dspace_user }}/.pm2/dump.pm2
-  shell: |
-    source /home/{{ project_dspace_user }}/.bashrc
-    pm2 save
+    src: dspace-angular.json.j2
+    dest: '/home/{{ project_dspace_user }}/dspace-angular.json'
   become: yes
   become_user: "{{ project_dspace_user }}"
 
 - name: Install PM2 systemd service
   template:
-    src: pm2-dspace.service.j2
-    dest: /etc/systemd/system/pm2-dspace.service
+    src: pm2-dspace-angular.service.j2
+    dest: /etc/systemd/system/pm2-dspace-angular.service
     mode: '0755'
     owner: "{{ project_dspace_user }}"
     group: "{{ project_dspace_group }}"
@@ -52,6 +40,6 @@
 
 - name: Ensure PM2 service is started and enabled on boot
   service:
-    name: pm2-dspace
+    name: pm2-dspace-angular
     enabled: yes
     state: restarted

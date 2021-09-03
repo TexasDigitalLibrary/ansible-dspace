@@ -1,9 +1,10 @@
 <VirtualHost *:80>
-  ServerName {{ project_hostname }}
-  ServerAlias *
+  ServerName {{ dspace_api_hostname }}
+  # ServerAlias *
 
   # For dspace-angular app
   Header set Access-Control-Allow-Origin "*"
+  Header set Access-Control-Allow-Headers "Content-Type,Authorization,x-correlation-id,x-referrer,x-xsrf-token"
 
   <Directory {{ dspace_api_home_dir }}>
     AllowOverride All

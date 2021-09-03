@@ -2,7 +2,7 @@
 - name: Install Javascript dependencies
   shell: |
     source /home/{{ project_dspace_user }}/.bashrc
-    /home/{{ project_dspace_user }}/.nvm/versions/node/v{{ node_version }}/bin/yarn install
+    /home/{{ project_dspace_user }}/.nvm/versions/node/v{{ dspace_node_version }}/bin/yarn install
   args:
     chdir: "{{ dspace_angular_home_dir }}"
   become: true
@@ -11,7 +11,7 @@
 - name: Build dspace-angular app for production
   shell: |
     source /home/{{ project_dspace_user }}/.bashrc
-    /home/{{ project_dspace_user }}/.nvm/versions/node/v{{ node_version }}/bin/yarn run build:prod
+    /home/{{ project_dspace_user }}/.nvm/versions/node/v{{ dspace_node_version }}/bin/yarn run build:prod
   args:
     chdir: "{{ dspace_angular_home_dir }}"
   become: true
