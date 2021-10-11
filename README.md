@@ -20,11 +20,11 @@ Ansible playbooks to stand up an instance of DSpace 7.x (API and Angular Fronten
   * Tomcat 9.0
   * PostgreSQL 13
   * Shibboleth 3.2
-  * Solr 8.9.0
+  * Solr 8.10.0
   * Fuseki 4.1.0
   * Java 11
-  * Node.js 14.17.5
-  * PM2 5.1.1
+  * Node.js 14.18.0
+  * PM2 5.1.2
   * DSpace 7.x (API and Angular Frontend)
 
 ## Notes
