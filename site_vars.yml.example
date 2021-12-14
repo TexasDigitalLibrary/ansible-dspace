@@ -15,7 +15,7 @@ solr_group: solr
 solr_host: localhost
 solr_port: 8983
 solr_url: 'http://localhost:{{ solr_port }}/solr'
-solr_version: 8.10.0
+solr_version: 8.11.0
 solr_install_dir: /opt
 solr_home_dir: /var/solr
 solr_config_file: /etc/default/solr.in.sh
@@ -34,7 +34,7 @@ tomcat_daemon: tomcat
 install_shibboleth: false
 
 # Fuseki config
-fuseki_version: 4.1.0
+fuseki_version: 4.3.1
 fuseki_user: fuseki
 fuseki_group: fuseki
 fuseki_password: fuseki
@@ -53,7 +53,7 @@ dspace_db_port: 5432
 dspace_db_name: dspace
 
 # Maven config
-maven_version: 3.8.3
+maven_version: 3.8.4
 
 # DSpace API config
 dspace_api_git_repo: https://github.com/DSpace/DSpace.git
@@ -70,11 +70,11 @@ dspace_admin_password: [insert password]
 dspace_admin_language: en
 
 # DSpace user NodeJS config
-dspace_nvm_version: 0.38.0
-dspace_node_version: 14.18.0
+dspace_nvm_version: 0.39.0
+dspace_node_version: 14.18.2
 
 # Global NodeJS config
-global_node_version: 14.18.0
+global_node_version: 14.18.2
 
 # PM2 config
 pm2_version: 5.1.2
