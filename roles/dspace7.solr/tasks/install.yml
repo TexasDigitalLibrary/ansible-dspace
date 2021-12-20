@@ -26,7 +26,7 @@
 # Download Solr from the closest mirror (won't work for archive releases).
 - name: Download Solr from the closest mirror
   get_url:
-    url: 'http://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz'
+    url: 'https://archive.apache.org/dist/lucene/solr/{{ solr_version }}/solr-{{ solr_version }}.tgz'
     dest: '{{ solr_download_dest }}'
   failed_when: false
   when: solr_existing_version.rc != 0
